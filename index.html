@@ -185,6 +185,18 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
+        .position-group {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(52, 152, 219, 0.05);
+            border-radius: 5px;
+        }
+        
+        .position-group h5 {
+            margin-bottom: 5px;
+            color: var(--dark-text);
+        }
+        
         footer {
             text-align: center;
             margin-top: 30px;
@@ -523,13 +535,13 @@
                     // 如果找到匹配的数据
                     if (match) {
                         // 查找可行的站位组合
-                        const positions = findValidPositions(match.d_value, otherChar);
+                        const positionGroups = findValidPositionGroups(match.d_value, otherChar);
                         
-                        if (positions.length > 0) {
+                        if (positionGroups.length > 0) {
                             validCombinations.push({
                                 pairing: pairing,
                                 d_value: match.d_value,
-                                positions: positions
+                                position_groups: positionGroups
                             });
                         }
                     }
@@ -543,48 +555,73 @@
                 }
             }
             
-            // 查找可行的站位组合
-            function findValidPositions(dValue, otherChar) {
-                const validPositions = [];
+            // 查找可行的站位组合（按组显示）
+            function findValidPositionGroups(dValue, otherChar) {
+                const positionGroups = [];
                 
-                // 遍历所有可能的站位组合
-                for (const bestPos of ['P1', 'P2', 'P3', 'P4', 'P5']) {
-                    for (const otherPos of ['P1', 'P2', 'P3', 'P4', 'P5']) {
-                        // 计算弹道时间差
-                        const trajectoryDiff = calculateTrajectoryDiff(bestPos, otherPos, otherChar);
-                        
-                        // 如果弹道时间差等于d值，则这是一个可行的站位组合
-                        if (trajectoryDiff === dValue) {
-                            validPositions.push({
-                                best_position: bestPos,
-                                other_position: otherPos
-                            });
-                        }
+                // 根据d值和角色类型确定站位规则
+                if (otherChar === 'emt') {
+                    if (dValue === -4) {
+                        // 贝斯蒂在P3/P4/P5，EMT在P1/P2
+                        positionGroups.push({
+                            name: "贝斯蒂在P3/P4/P5，EMT在P1/P2"
+                        });
+                    } else if (dValue === -2) {
+                        // 两种情况：
+                        // 1. 贝斯蒂在P3/P4/P5，EMT在P3/P4/P5
+                        positionGroups.push({
+                            name: "贝斯蒂在P3/P4/P5，EMT在P3/P4/P5"
+                        });
+                        // 2. 贝斯蒂在P1/P2，EMT在P1/P2
+                        positionGroups.push({
+                            name: "贝斯蒂在P1/P2，EMT在P1/P2"
+                        });
+                    } else if (dValue === 0) {
+                        // 贝斯蒂在P1/P2，EMT在P3/P4/P5
+                        positionGroups.push({
+                            name: "贝斯蒂在P1/P2，EMT在P3/P4/P5"
+                        });
+                    } else if (dValue === 2) {
+                        // 贝斯蒂在P1/P2，EMT在P3/P4/P5
+                        positionGroups.push({
+                            name: "贝斯蒂在P1/P2，EMT在P3/P4/P5"
+                        });
+                    }
+                } else if (otherChar === 'lpls') {
+                    if (dValue === 6) {
+                        // 贝斯蒂在P3/P4/P5
+                        positionGroups.push({
+                            name: "贝斯蒂在P3/P4/P5"
+                        });
+                    } else if (dValue === 8) {
+                        // 贝斯蒂在P1/P2
+                        positionGroups.push({
+                            name: "贝斯蒂在P1/P2"
+                        });
                     }
                 }
                 
-                return validPositions;
-            }
-            
-            // 计算弹道时间差
-            function calculateTrajectoryDiff(bestPosition, otherPosition, otherChar) {
-                const bestTrajectory = trajectoryData.best[bestPosition];
-                const otherTrajectory = trajectoryData[otherChar][otherPosition];
-                return bestTrajectory - otherTrajectory;
+                return positionGroups;
             }
             
             // 显示成功结果
             function showSuccess(validCombinations, charType) {
                 let resultHTML = `<div class="success">`;
                 resultHTML += `<h3>🎉 可以触发同帧命中！</h3>`;
-                resultHTML += `<p>找到 ${validCombinations.length} 种可行的组合：</p>`;
                 
                 resultHTML += `<div class="possible-combinations">`;
                 validCombinations.forEach(combination => {
                     resultHTML += `<div class="combination-item">`;
                     resultHTML += `<h4>${combination.pairing}</h4>`;
                     resultHTML += `<p><strong>击发时间差:</strong> ${combination.d_value}帧</p>`;
-                    resultHTML += `<p><strong>站位要求:</strong> ${formatPositions(combination.positions)}</p>`;
+                    
+                    // 显示站位分组
+                    combination.position_groups.forEach(group => {
+                        resultHTML += `<div class="position-group">`;
+                        resultHTML += `<h5>${group.name}</h5>`;
+                        resultHTML += `</div>`;
+                    });
+                    
                     resultHTML += `</div>`;
                 });
                 resultHTML += `</div>`;
@@ -600,7 +637,6 @@
                     <div class="error">
                         <h3>😔 无法触发同帧命中</h3>
                         <p>当前选择的蓄速组合无法触发同帧命中，请尝试其他组合。</p>
-                        <p>提示：可以尝试调整贝斯蒂的减少帧数或副角色的蓄速百分比。</p>
                     </div>
                 `;
                 resultContent.className = 'error';
@@ -615,26 +651,6 @@
                     </div>
                 `;
                 resultContent.className = 'error';
-            }
-            
-            // 格式化站位显示
-            function formatPositions(positions) {
-                if (positions.length === 0) return '无可行站位';
-                
-                // 只显示前5个站位组合，避免显示过多
-                const displayPositions = positions.slice(0, 5);
-                let result = '';
-                
-                displayPositions.forEach((pos, index) => {
-                    if (index > 0) result += '，';
-                    result += `贝斯蒂${pos.best_position} + ${pos.other_position}`;
-                });
-                
-                if (positions.length > 5) {
-                    result += ` 等 ${positions.length} 种站位组合`;
-                }
-                
-                return result;
             }
         });
     </script>
