@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikke同帧命中查询工具</title>
+    <meta name="description" content="查询Nikke游戏中贝斯蒂与EMT/LPLS的同帧命中组合">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #7f8c8d;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: var(--dark-text);
+            font-size: 2.2rem;
+        }
+
+        .description {
+            color: var(--light-text);
+            font-size: 1.1rem;
+        }
+
+        .input-section {
+            background: var(--light-bg);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--dark-text);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        small {
+            color: var(--light-text);
+            font-size: 13px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        #check-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #check-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        #check-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            margin-bottom: 30px;
+        }
+
+        .result-section h2 {
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+
+        #result-content {
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 100px;
+            transition: all 0.3s;
+        }
+
+        .success {
+            background-color: rgba(46, 204, 113, 0.1);
+            border: 2px solid var(--success-color);
+            color: #155724;
+        }
+
+        .error {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 2px solid var(--error-color);
+            color: #721c24;
+        }
+
+        .info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border: 2px solid var(--primary-color);
+            color: #0c5460;
+        }
+
+        .help-section {
+            padding: 20px;
+            background-color: var(--light-bg);
+            border-radius: 10px;
+        }
+
+        .help-section h3 {
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+
+        .help-section ul {
+            padding-left: 20px;
+        }
+
+        .help-section li {
+            margin-bottom: 8px;
+        }
+        
+        .possible-combinations {
+            margin-top: 20px;
+        }
+        
+        .combination-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: var(--light-text);
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .input-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nikke同帧命中查询工具</h1>
+            <p class="description">查询贝斯蒂与EMT/LPLS的同帧命中组合，轻松提升伤害</p>
+        </header>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="char-type">选择角色组合:</label>
+                <select id="char-type">
+                    <option value="best_emt">贝斯蒂 + EMT</option>
+                    <option value="best_lpls">贝斯蒂 + LPLS</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="best-frames">贝斯蒂减少帧数:</label>
+                <input type="number" id="best-frames" min="0" max="30" value="0">
+                <small>0-30之间的整数 (0表示-0帧，2表示-2帧，以此类推)</small>
+            </div>
+            
+            <div class="input-group">
+                <label for="other-percent">副角色蓄速:</label>
+                <select id="other-percent">
+                    <!-- 选项将通过JavaScript动态添加 -->
+                </select>
+            </div>
+            
+            <button id="check-btn">查询同帧命中</button>
+        </div>
+        
+        <div class="result-section">
+            <h2>查询结果</h2>
+            <div id="result-content">
+                <p>请填写上方信息并点击查询</p>
+            </div>
+        </div>
+        
+        <div class="help-section">
+            <h3>使用说明</h3>
+            <ul>
+                <li><strong>贝斯蒂减少帧数</strong>：0表示-0帧，2表示-2帧，以此类推</li>
+                <li><strong>副角色蓄速</strong>：根据角色选择对应的百分比范围</li>
+                <li><strong>同帧命中</strong>：当贝斯蒂与EMT/LPLS同时命中时，EMT/LPLS的伤害会大幅提升</li>
+                <li>系统会自动检查所有可能的击发配对和站位组合</li>
+                <li>如果存在可行的组合，会显示所有可能的击发配对和站位要求</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Nikke同帧命中查询工具 &copy; 2023 | 数据基于游戏实测</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 同帧命中数据
+        const hitData = {
+            "best_emt": {
+                "贝斯蒂第一发 vs EMT第二发": [
+                    {"best_frames": 0, "emt_percent": "5-7%", "d_value": -2},
+                    {"best_frames": 2, "emt_percent": "5-7%", "d_value": 0},
+                    {"best_frames": 2, "emt_percent": "8-10%", "d_value": -4},
+                    {"best_frames": 4, "emt_percent": "5-7%", "d_value": 2},
+                    {"best_frames": 4, "emt_percent": "8-10%", "d_value": -2},
+                    {"best_frames": 6, "emt_percent": "8-10%", "d_value": 0},
+                    {"best_frames": 4, "emt_percent": "11%", "d_value": -4},
+                    {"best_frames": 6, "emt_percent": "11%", "d_value": -2},
+                    {"best_frames": 8, "emt_percent": "11%", "d_value": 0},
+                    {"best_frames": 6, "emt_percent": "12-14%", "d_value": -4},
+                    {"best_frames": 8, "emt_percent": "12-14%", "d_value": -2},
+                    {"best_frames": 10, "emt_percent": "12-14%", "d_value": 0},
+                    {"best_frames": 10, "emt_percent": "15-17%", "d_value": -4},
+                    {"best_frames": 12, "emt_percent": "15-17%", "d_value": -2},
+                    {"best_frames": 14, "emt_percent": "15-17%", "d_value": 0},
+                    {"best_frames": 14, "emt_percent": "18-20%", "d_value": -4},
+                    {"best_frames": 16, "emt_percent": "18-20%", "d_value": -2},
+                    {"best_frames": 18, "emt_percent": "18-20%", "d_value": 0},
+                    {"best_frames": 16, "emt_percent": "21%", "d_value": -4},
+                    {"best_frames": 18, "emt_percent": "21%", "d_value": -2},
+                    {"best_frames": 20, "emt_percent": "21%", "d_value": 0},
+                    {"best_frames": 18, "emt_percent": "22-24%", "d_value": -4},
+                    {"best_frames": 20, "emt_percent": "22-24%", "d_value": -2},
+                    {"best_frames": 22, "emt_percent": "22-24%", "d_value": 0},
+                    {"best_frames": 20, "emt_percent": "25-26%", "d_value": -4},
+                    {"best_frames": 22, "emt_percent": "25-26%", "d_value": -2},
+                    {"best_frames": 24, "emt_percent": "25-26%", "d_value": 0}
+                ],
+                "贝斯蒂第二发 vs EMT第二发": [
+                    {"best_frames": 12, "emt_percent": "0%", "d_value": -4},
+                    {"best_frames": 14, "emt_percent": "0%", "d_value": -2},
+                    {"best_frames": 16, "emt_percent": "0%", "d_value": 0},
+                    {"best_frames": 16, "emt_percent": "2-4%", "d_value": -4},
+                    {"best_frames": 18, "emt_percent": "2-4%", "d_value": -2},
+                    {"best_frames": 20, "emt_percent": "2-4%", "d_value": 0},
+                    {"best_frames": 20, "emt_percent": "5-7%", "d_value": -4},
+                    {"best_frames": 22, "emt_percent": "5-7%", "d_value": -2},
+                    {"best_frames": 24, "emt_percent": "5-7%", "d_value": 0},
+                    {"best_frames": 24, "emt_percent": "8-10%", "d_value": -4},
+                    {"best_frames": 26, "emt_percent": "8-10%", "d_value": -2},
+                    {"best_frames": 28, "emt_percent": "8-10%", "d_value": 0},
+                    {"best_frames": 26, "emt_percent": "11%", "d_value": -4},
+                    {"best_frames": 28, "emt_percent": "11%", "d_value": -2},
+                    {"best_frames": 30, "emt_percent": "11%", "d_value": 0},
+                    {"best_frames": 28, "emt_percent": "12-14%", "d_value": -4},
+                    {"best_frames": 30, "emt_percent": "12-14%", "d_value": -2}
+                ],
+                "贝斯蒂第三发 vs EMT第三发": [
+                    {"best_frames": 0, "emt_percent": "15-17%", "d_value": 0},
+                    {"best_frames": 2, "emt_percent": "15-17%", "d_value": 2},
+                    {"best_frames": 2, "emt_percent": "18-20%", "d_value": -4},
+                    {"best_frames": 4, "emt_percent": "18-20%", "d_value": -2},
+                    {"best_frames": 6, "emt_percent": "18-20%", "d_value": 0},
+                    {"best_frames": 8, "emt_percent": "18-20%", "d_value": 2},
+                    {"best_frames": 4, "emt_percent": "21%", "d_value": -4},
+                    {"best_frames": 6, "emt_percent": "21%", "d_value": -2},
+                    {"best_frames": 8, "emt_percent": "21%", "d_value": 0},
+                    {"best_frames": 10, "emt_percent": "21%", "d_value": 2},
+                    {"best_frames": 8, "emt_percent": "22-24%", "d_value": -4},
+                    {"best_frames": 10, "emt_percent": "22-24%", "d_value": -2},
+                    {"best_frames": 12, "emt_percent": "22-24%", "d_value": 0},
+                    {"best_frames": 14, "emt_percent": "22-24%", "d_value": 2},
+                    {"best_frames": 10, "emt_percent": "25-26%", "d_value": -4},
+                    {"best_frames": 12, "emt_percent": "25-26%", "d_value": -2},
+                    {"best_frames": 14, "emt_percent": "25-26%", "d_value": 0},
+                    {"best_frames": 16, "emt_percent": "25-26%", "d_value": 2}
+                ],
+                "贝斯蒂第四发 vs EMT第三发": [
+                    {"best_frames": 0, "emt_percent": "2-4%", "d_value": 2},
+                    {"best_frames": 0, "emt_percent": "5-7%", "d_value": -4},
+                    {"best_frames": 2, "emt_percent": "5-7%", "d_value": -2},
+                    {"best_frames": 4, "emt_percent": "5-7%", "d_value": 0},
+                    {"best_frames": 6, "emt_percent": "5-7%", "d_value": 2},
+                    {"best_frames": 6, "emt_percent": "8-10%", "d_value": -4},
+                    {"best_frames": 8, "emt_percent": "8-10%", "d_value": -2},
+                    {"best_frames": 10, "emt_percent": "8-10%", "d_value": 0},
+                    {"best_frames": 12, "emt_percent": "8-10%", "d_value": 2},
+                    {"best_frames": 8, "emt_percent": "11%", "d_value": -4},
+                    {"best_frames": 10, "emt_percent": "11%", "d_value": -2},
+                    {"best_frames": 12, "emt_percent": "11%", "d_value": 0},
+                    {"best_frames": 14, "emt_percent": "11%", "d_value": 2},
+                    {"best_frames": 12, "emt_percent": "12-14%", "d_value": -4},
+                    {"best_frames": 14, "emt_percent": "12-14%", "d_value": -2},
+                    {"best_frames": 16, "emt_percent": "12-14%", "d_value": 0},
+                    {"best_frames": 18, "emt_percent": "12-14%", "d_value": 2},
+                    {"best_frames": 18, "emt_percent": "15-17%", "d_value": -4},
+                    {"best_frames": 20, "emt_percent": "15-17%", "d_value": -2},
+                    {"best_frames": 22, "emt_percent": "15-17%", "d_value": 0},
+                    {"best_frames": 24, "emt_percent": "15-17%", "d_value": 2},
+                    {"best_frames": 24, "emt_percent": "18-20%", "d_value": -4},
+                    {"best_frames": 26, "emt_percent": "18-20%", "d_value": -2},
+                    {"best_frames": 28, "emt_percent": "18-20%", "d_value": 0},
+                    {"best_frames": 30, "emt_percent": "18-20%", "d_value": 2},
+                    {"best_frames": 26, "emt_percent": "21%", "d_value": -4},
+                    {"best_frames": 28, "emt_percent": "21%", "d_value": -2},
+                    {"best_frames": 30, "emt_percent": "21%", "d_value": 0},
+                    {"best_frames": 30, "emt_percent": "22-24%", "d_value": -4}
+                ]
+            },
+            "best_lpls": {
+                "贝斯蒂第一发 vs LPLS第二发": [
+                    {"best_frames": 0, "lpls_percent": "5-7%", "d_value": 6},
+                    {"best_frames": 2, "lpls_percent": "5-7%", "d_value": 8},
+                    {"best_frames": 4, "lpls_percent": "8-10%", "d_value": 6},
+                    {"best_frames": 6, "lpls_percent": "8-10%", "d_value": 8},
+                    {"best_frames": 8, "lpls_percent": "11-14%", "d_value": 6},
+                    {"best_frames": 10, "lpls_percent": "11-14%", "d_value": 8},
+                    {"best_frames": 12, "lpls_percent": "15-17%", "d_value": 6},
+                    {"best_frames": 14, "lpls_percent": "15-17%", "d_value": 8},
+                    {"best_frames": 16, "lpls_percent": "18-20%", "d_value": 6},
+                    {"best_frames": 18, "lpls_percent": "18-20%", "d_value": 8},
+                    {"best_frames": 20, "lpls_percent": "21-24%", "d_value": 6},
+                    {"best_frames": 22, "lpls_percent": "21-24%", "d_value": 8},
+                    {"best_frames": 24, "lpls_percent": "25-26%", "d_value": 6},
+                    {"best_frames": 26, "lpls_percent": "25-26%", "d_value": 8}
+                ],
+                "贝斯蒂第二发 vs LPLS第二发": [
+                    {"best_frames": 14, "lpls_percent": "0-1%", "d_value": 6},
+                    {"best_frames": 16, "lpls_percent": "0-1%", "d_value": 8},
+                    {"best_frames": 18, "lpls_percent": "2-4%", "d_value": 6},
+                    {"best_frames": 20, "lpls_percent": "2-4%", "d_value": 8},
+                    {"best_frames": 22, "lpls_percent": "5-7%", "d_value": 6},
+                    {"best_frames": 24, "lpls_percent": "5-7%", "d_value": 8},
+                    {"best_frames": 26, "lpls_percent": "8-10%", "d_value": 6},
+                    {"best_frames": 28, "lpls_percent": "8-10%", "d_value": 8},
+                    {"best_frames": 30, "lpls_percent": "11-14%", "d_value": 6}
+                ],
+                "贝斯蒂第三发 vs LPLS第三发": [
+                    {"best_frames": 2, "lpls_percent": "21-24%", "d_value": 6},
+                    {"best_frames": 4, "lpls_percent": "21-24%", "d_value": 8},
+                    {"best_frames": 8, "lpls_percent": "25-26%", "d_value": 6},
+                    {"best_frames": 10, "lpls_percent": "25-26%", "d_value": 8}
+                ],
+                "贝斯蒂第四发 vs LPLS第三发": [
+                    {"best_frames": 0, "lpls_percent": "8-10%", "d_value": 6},
+                    {"best_frames": 2, "lpls_percent": "8-10%", "d_value": 8},
+                    {"best_frames": 6, "lpls_percent": "11-14%", "d_value": 6},
+                    {"best_frames": 8, "lpls_percent": "11-14%", "d_value": 8},
+                    {"best_frames": 12, "lpls_percent": "15-17%", "d_value": 6},
+                    {"best_frames": 14, "lpls_percent": "15-17%", "d_value": 8},
+                    {"best_frames": 18, "lpls_percent": "18-20%", "d_value": 6},
+                    {"best_frames": 20, "lpls_percent": "18-20%", "d_value": 8},
+                    {"best_frames": 24, "lpls_percent": "21-24%", "d_value": 6},
+                    {"best_frames": 26, "lpls_percent": "21-24%", "d_value": 8},
+                    {"best_frames": 30, "lpls_percent": "25-26%", "d_value": 6}
+                ]
+            }
+        };
+
+        // 角色蓄速选项
+        const charOptions = {
+            "best_emt": ["0%", "2-4%", "5-7%", "8-10%", "11%", "12-14%", "15-17%", "18-20%", "21%", "22-24%", "25-26%"],
+            "best_lpls": ["0-1%", "2-4%", "5-7%", "8-10%", "11-14%", "15-17%", "18-20%", "21-24%", "25-26%"]
+        };
+
+        // 弹道数据
+        const trajectoryData = {
+            "best": {
+                "P1": 14,
+                "P2": 14,
+                "P3": 12,
+                "P4": 12,
+                "P5": 12
+            },
+            "emt": {
+                "P1": 16,
+                "P2": 16,
+                "P3": 14,
+                "P4": 14,
+                "P5": 14
+            },
+            "lpls": {
+                "P1": 6,
+                "P2": 6,
+                "P3": 6,
+                "P4": 6,
+                "P5": 6
+            }
+        };
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const charTypeSelect = document.getElementById('char-type');
+            const otherPercentSelect = document.getElementById('other-percent');
+            const bestFramesInput = document.getElementById('best-frames');
+            const checkBtn = document.getElementById('check-btn');
+            const resultContent = document.getElementById('result-content');
+            
+            // 初始化选项
+            updateCharOptions();
+            
+            // 监听角色类型变化
+            charTypeSelect.addEventListener('change', function() {
+                updateCharOptions();
+            });
+            
+            // 查询按钮点击事件
+            checkBtn.addEventListener('click', function() {
+                checkAllPossibleCombinations();
+            });
+            
+            // 更新角色选项
+            function updateCharOptions() {
+                const charType = charTypeSelect.value;
+                const options = charOptions[charType];
+                
+                // 清空现有选项
+                otherPercentSelect.innerHTML = '';
+                
+                // 添加新选项
+                options.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option;
+                    optionElement.textContent = option;
+                    otherPercentSelect.appendChild(optionElement);
+                });
+            }
+            
+            // 检查所有可能的组合
+            function checkAllPossibleCombinations() {
+                // 获取输入值
+                const charType = charTypeSelect.value;
+                const bestFrames = parseInt(bestFramesInput.value);
+                const otherPercent = otherPercentSelect.value;
+                
+                // 验证输入
+                if (isNaN(bestFrames) || bestFrames < 0 || bestFrames > 30) {
+                    showError("请输入0-30之间的贝斯蒂减少帧数");
+                    return;
+                }
+                
+                // 获取对应的数据
+                const pairingData = hitData[charType];
+                const otherChar = charType.split('_')[1]; // 获取emt或lpls
+                
+                // 存储所有可行的组合
+                const validCombinations = [];
+                
+                // 遍历所有击发配对
+                Object.keys(pairingData).forEach(pairing => {
+                    // 查找匹配的数据
+                    const match = pairingData[pairing].find(item => {
+                        if (charType === 'best_emt') {
+                            return item.best_frames === bestFrames && item.emt_percent === otherPercent;
+                        } else if (charType === 'best_lpls') {
+                            return item.best_frames === bestFrames && item.lpls_percent === otherPercent;
+                        }
+                        return false;
+                    });
+                    
+                    // 如果找到匹配的数据
+                    if (match) {
+                        // 查找可行的站位组合
+                        const positions = findValidPositions(match.d_value, otherChar);
+                        
+                        if (positions.length > 0) {
+                            validCombinations.push({
+                                pairing: pairing,
+                                d_value: match.d_value,
+                                positions: positions
+                            });
+                        }
+                    }
+                });
+                
+                // 显示结果
+                if (validCombinations.length > 0) {
+                    showSuccess(validCombinations, charType);
+                } else {
+                    showNoResult();
+                }
+            }
+            
+            // 查找可行的站位组合
+            function findValidPositions(dValue, otherChar) {
+                const validPositions = [];
+                
+                // 遍历所有可能的站位组合
+                for (const bestPos of ['P1', 'P2', 'P3', 'P4', 'P5']) {
+                    for (const otherPos of ['P1', 'P2', 'P3', 'P4', 'P5']) {
+                        // 计算弹道时间差
+                        const trajectoryDiff = calculateTrajectoryDiff(bestPos, otherPos, otherChar);
+                        
+                        // 如果弹道时间差等于d值，则这是一个可行的站位组合
+                        if (trajectoryDiff === dValue) {
+                            validPositions.push({
+                                best_position: bestPos,
+                                other_position: otherPos
+                            });
+                        }
+                    }
+                }
+                
+                return validPositions;
+            }
+            
+            // 计算弹道时间差
+            function calculateTrajectoryDiff(bestPosition, otherPosition, otherChar) {
+                const bestTrajectory = trajectoryData.best[bestPosition];
+                const otherTrajectory = trajectoryData[otherChar][otherPosition];
+                return bestTrajectory - otherTrajectory;
+            }
+            
+            // 显示成功结果
+            function showSuccess(validCombinations, charType) {
+                let resultHTML = `<div class="success">`;
+                resultHTML += `<h3>🎉 可以触发同帧命中！</h3>`;
+                resultHTML += `<p>找到 ${validCombinations.length} 种可行的组合：</p>`;
+                
+                resultHTML += `<div class="possible-combinations">`;
+                validCombinations.forEach(combination => {
+                    resultHTML += `<div class="combination-item">`;
+                    resultHTML += `<h4>${combination.pairing}</h4>`;
+                    resultHTML += `<p><strong>击发时间差:</strong> ${combination.d_value}帧</p>`;
+                    resultHTML += `<p><strong>站位要求:</strong> ${formatPositions(combination.positions)}</p>`;
+                    resultHTML += `</div>`;
+                });
+                resultHTML += `</div>`;
+                resultHTML += `</div>`;
+                
+                resultContent.innerHTML = resultHTML;
+                resultContent.className = 'success';
+            }
+            
+            // 显示无结果
+            function showNoResult() {
+                resultContent.innerHTML = `
+                    <div class="error">
+                        <h3>😔 无法触发同帧命中</h3>
+                        <p>当前选择的蓄速组合无法触发同帧命中，请尝试其他组合。</p>
+                        <p>提示：可以尝试调整贝斯蒂的减少帧数或副角色的蓄速百分比。</p>
+                    </div>
+                `;
+                resultContent.className = 'error';
+            }
+            
+            // 显示错误
+            function showError(message) {
+                resultContent.innerHTML = `
+                    <div class="error">
+                        <h3>❌ 输入错误</h3>
+                        <p>${message}</p>
+                    </div>
+                `;
+                resultContent.className = 'error';
+            }
+            
+            // 格式化站位显示
+            function formatPositions(positions) {
+                if (positions.length === 0) return '无可行站位';
+                
+                // 只显示前5个站位组合，避免显示过多
+                const displayPositions = positions.slice(0, 5);
+                let result = '';
+                
+                displayPositions.forEach((pos, index) => {
+                    if (index > 0) result += '，';
+                    result += `贝斯蒂${pos.best_position} + ${pos.other_position}`;
+                });
+                
+                if (positions.length > 5) {
+                    result += ` 等 ${positions.length} 种站位组合`;
+                }
+                
+                return result;
+            }
+        });
+    </script>
+</body>
+</html>
