@@ -4,218 +4,211 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nikke同帧命中查询工具</title>
-    <meta name="description" content="查询Nikke游戏中贝斯蒂与EMT/LPLS的同帧命中组合">
     <style>
-        :root {
-            --primary-color: #3498db;
-            --success-color: #2ecc71;
-            --error-color: #e74c3c;
-            --warning-color: #f39c12;
-            --light-bg: #f8f9fa;
-            --dark-text: #2c3e50;
-            --light-text: #7f8c8d;
-        }
-        
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--dark-text);
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: #ffffff;
+            color: #333;
             min-height: 100vh;
             padding: 20px;
         }
-
+        
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
-            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
         }
-
+        
         header {
             text-align: center;
             margin-bottom: 30px;
+            border-bottom: 1px solid #eaeaea;
             padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
         }
-
+        
         h1 {
+            color: #2a5298;
             margin-bottom: 10px;
-            color: var(--dark-text);
             font-size: 2.2rem;
         }
-
+        
+        .subtitle {
+            color: #5a7cbd;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
         .description {
-            color: var(--light-text);
-            font-size: 1.1rem;
-        }
-
-        .input-section {
-            background: var(--light-bg);
-            padding: 25px;
-            border-radius: 10px;
+            text-align: center;
             margin-bottom: 30px;
+            line-height: 1.6;
+            color: #555;
         }
-
-        .input-group {
+        
+        .form-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .form-title {
+            color: #2a5298;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
             margin-bottom: 20px;
         }
-
+        
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            color: var(--dark-text);
+            color: #2d3748;
         }
-
+        
         select, input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
+            padding: 12px;
             border-radius: 8px;
+            border: 2px solid #4299e1;
+            background: #fff;
+            color: #2d3748;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
-
+        
         select:focus, input:focus {
-            border-color: var(--primary-color);
             outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.2);
         }
-
-        small {
-            color: var(--light-text);
-            font-size: 13px;
-            display: block;
-            margin-top: 5px;
-        }
-
-        #check-btn {
+        
+        button {
             width: 100%;
             padding: 15px;
-            background-color: var(--primary-color);
+            background: #4299e1;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        #check-btn:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        #check-btn:active {
-            transform: translateY(0);
-        }
-
-        .result-section {
-            margin-bottom: 30px;
-        }
-
-        .result-section h2 {
-            margin-bottom: 15px;
-            color: var(--dark-text);
-        }
-
-        #result-content {
-            padding: 20px;
-            border-radius: 10px;
-            min-height: 100px;
             transition: all 0.3s;
+            margin-top: 10px;
         }
-
-        .success {
-            background-color: rgba(46, 204, 113, 0.1);
-            border: 2px solid var(--success-color);
-            color: #155724;
+        
+        button:hover {
+            background: #2a5298;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-
-        .error {
-            background-color: rgba(231, 76, 60, 0.1);
-            border: 2px solid var(--error-color);
-            color: #721c24;
-        }
-
-        .info {
-            background-color: rgba(52, 152, 219, 0.1);
-            border: 2px solid var(--primary-color);
-            color: #0c5460;
-        }
-
-        .help-section {
-            padding: 20px;
-            background-color: var(--light-bg);
+        
+        .instructions {
+            background: #edf2f7;
             border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #4299e1;
         }
-
-        .help-section h3 {
+        
+        .instructions h3 {
+            color: #2a5298;
             margin-bottom: 15px;
-            color: var(--dark-text);
         }
-
-        .help-section ul {
+        
+        .instructions ul {
             padding-left: 20px;
         }
-
-        .help-section li {
-            margin-bottom: 8px;
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
         }
         
-        .possible-combinations {
-            margin-top: 20px;
-        }
-        
-        .combination-item {
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: white;
-            border-radius: 8px;
-            border-left: 5px solid var(--primary-color);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
-        .position-group {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: rgba(52, 152, 219, 0.05);
-            border-radius: 5px;
-        }
-        
-        .position-group h5 {
-            margin-bottom: 5px;
-            color: var(--dark-text);
-        }
-        
-        footer {
-            text-align: center;
+        .result {
             margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .success {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-left: 5px solid #48bb78;
+        }
+        
+        .failure {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-left: 5px solid #f56565;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #2d3748;
+        }
+        
+        .combination {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .combination-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2a5298;
+            font-size: 1.1rem;
+        }
+        
+        .position-info {
+            color: #4a5568;
+            font-style: italic;
+            margin-top: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #718096;
+            font-size: 0.9rem;
+            border-top: 1px solid #eaeaea;
             padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: var(--light-text);
-            font-size: 14px;
         }
         
         @media (max-width: 600px) {
             .container {
-                padding: 20px;
+                padding: 15px;
             }
             
             h1 {
                 font-size: 1.8rem;
             }
             
-            .input-section {
+            .form-section {
                 padding: 15px;
             }
         }
@@ -225,42 +218,66 @@
     <div class="container">
         <header>
             <h1>Nikke同帧命中查询工具</h1>
-            <p class="description">查询贝斯蒂与EMT/LPLS的同帧命中组合，轻松提升伤害</p>
+            <div class="subtitle">查询贝斯蒂与EMT/LPLS的同帧命中组合，轻松提升伤害</div>
+            <div class="description">
+                <p>当贝斯蒂与EMT/LPLS同帧命中时，EMT/LPLS的伤害会大幅提升至4-5.5倍，包括直接命中伤害和溅射伤害</p>
+            </div>
         </header>
         
-        <div class="input-section">
-            <div class="input-group">
-                <label for="char-type">选择角色组合:</label>
-                <select id="char-type">
-                    <option value="best_emt">贝斯蒂 + EMT</option>
-                    <option value="best_lpls">贝斯蒂 + LPLS</option>
+        <div class="form-section">
+            <h2 class="form-title">查询参数</h2>
+            
+            <div class="form-group">
+                <label for="character-combo">角色组合</label>
+                <select id="character-combo">
+                    <option value="bestie-emt">贝斯蒂 + EMT</option>
+                    <option value="bestie-lpls">贝斯蒂 + LPLS</option>
                 </select>
             </div>
             
-            <div class="input-group">
-                <label for="best-frames">贝斯蒂减少帧数:</label>
-                <input type="number" id="best-frames" min="0" max="30" value="0">
-                <small>0-30之间的整数 (0表示-0帧，2表示-2帧，以此类推)</small>
+            <div class="form-group">
+                <label for="bestie-frames">贝斯蒂减少帧数 (0-30)</label>
+                <input type="number" id="bestie-frames" min="0" max="30" value="0">
+                <small style="color: #718096; font-size: 0.9rem;">0表示-0帧，2表示-2帧，以此类推</small>
             </div>
             
-            <div class="input-group">
-                <label for="other-percent">副角色蓄速:</label>
-                <select id="other-percent">
-                    <!-- 选项将通过JavaScript动态添加 -->
+            <div class="form-group">
+                <label for="other-speed">副角色蓄速百分比</label>
+                <select id="other-speed">
+                    <!-- EMT选项 -->
+                    <option value="0%" class="emt-option">0%</option>
+                    <option value="2-4%" class="emt-option">2-4%</option>
+                    <option value="5-7%" class="emt-option">5-7%</option>
+                    <option value="8-10%" class="emt-option">8-10%</option>
+                    <option value="11%" class="emt-option">11%</option>
+                    <option value="12-14%" class="emt-option">12-14%</option>
+                    <option value="15-17%" class="emt-option">15-17%</option>
+                    <option value="18-20%" class="emt-option">18-20%</option>
+                    <option value="21%" class="emt-option">21%</option>
+                    <option value="22-24%" class="emt-option">22-24%</option>
+                    <option value="25-26%" class="emt-option">25-26%</option>
+                    
+                    <!-- LPLS选项 -->
+                    <option value="0-1%" class="lpls-option">0-1%</option>
+                    <option value="2-4%" class="lpls-option">2-4%</option>
+                    <option value="5-7%" class="lpls-option">5-7%</option>
+                    <option value="8-10%" class="lpls-option">8-10%</option>
+                    <option value="11-14%" class="lpls-option">11-14%</option>
+                    <option value="15-17%" class="lpls-option">15-17%</option>
+                    <option value="18-20%" class="lpls-option">18-20%</option>
+                    <option value="21-24%" class="lpls-option">21-24%</option>
+                    <option value="25-26%" class="lpls-option">25-26%</option>
                 </select>
             </div>
             
-            <button id="check-btn">查询同帧命中</button>
+            <button id="query-btn">查询同帧命中组合</button>
         </div>
         
-        <div class="result-section">
-            <h2>查询结果</h2>
-            <div id="result-content">
-                <p>请填写上方信息并点击查询</p>
-            </div>
+        <div id="result" class="result">
+            <!-- 结果将在这里显示 -->
         </div>
         
-        <div class="help-section">
+        <div class="instructions">
             <h3>使用说明</h3>
             <ul>
                 <li><strong>贝斯蒂减少帧数</strong>：0表示-0帧，2表示-2帧，以此类推</li>
@@ -271,387 +288,245 @@
             </ul>
         </div>
         
-        <footer>
-            <p>Nikke同帧命中查询工具 &copy; 2023 | 数据基于游戏实测</p>
-        </footer>
+        <div class="footer">
+            <p>Nikke同帧命中查询工具 © 2025 | 数据基于游戏实测 By Achelous</p>
+        </div>
     </div>
-    
+
     <script>
-        // 同帧命中数据
-        const hitData = {
-            "best_emt": {
-                "贝斯蒂第一发 vs EMT第二发": [
-                    {"best_frames": 0, "emt_percent": "5-7%", "d_value": -2},
-                    {"best_frames": 2, "emt_percent": "5-7%", "d_value": 0},
-                    {"best_frames": 2, "emt_percent": "8-10%", "d_value": -4},
-                    {"best_frames": 4, "emt_percent": "5-7%", "d_value": 2},
-                    {"best_frames": 4, "emt_percent": "8-10%", "d_value": -2},
-                    {"best_frames": 6, "emt_percent": "8-10%", "d_value": 0},
-                    {"best_frames": 4, "emt_percent": "11%", "d_value": -4},
-                    {"best_frames": 6, "emt_percent": "11%", "d_value": -2},
-                    {"best_frames": 8, "emt_percent": "11%", "d_value": 0},
-                    {"best_frames": 6, "emt_percent": "12-14%", "d_value": -4},
-                    {"best_frames": 8, "emt_percent": "12-14%", "d_value": -2},
-                    {"best_frames": 10, "emt_percent": "12-14%", "d_value": 0},
-                    {"best_frames": 10, "emt_percent": "15-17%", "d_value": -4},
-                    {"best_frames": 12, "emt_percent": "15-17%", "d_value": -2},
-                    {"best_frames": 14, "emt_percent": "15-17%", "d_value": 0},
-                    {"best_frames": 14, "emt_percent": "18-20%", "d_value": -4},
-                    {"best_frames": 16, "emt_percent": "18-20%", "d_value": -2},
-                    {"best_frames": 18, "emt_percent": "18-20%", "d_value": 0},
-                    {"best_frames": 16, "emt_percent": "21%", "d_value": -4},
-                    {"best_frames": 18, "emt_percent": "21%", "d_value": -2},
-                    {"best_frames": 20, "emt_percent": "21%", "d_value": 0},
-                    {"best_frames": 18, "emt_percent": "22-24%", "d_value": -4},
-                    {"best_frames": 20, "emt_percent": "22-24%", "d_value": -2},
-                    {"best_frames": 22, "emt_percent": "22-24%", "d_value": 0},
-                    {"best_frames": 20, "emt_percent": "25-26%", "d_value": -4},
-                    {"best_frames": 22, "emt_percent": "25-26%", "d_value": -2},
-                    {"best_frames": 24, "emt_percent": "25-26%", "d_value": 0}
+        // 同帧命中数据 - 使用全称
+        const frameData = {
+            // 贝斯蒂 + EMT 组合
+            "bestie-emt": {
+                "贝斯蒂第一发 与 EMT第二发": [
+                    {bestieFrames: 0, otherSpeed: "5-7%", d: -2},
+                    {bestieFrames: 2, otherSpeed: "5-7%", d: 0},
+                    {bestieFrames: 2, otherSpeed: "8-10%", d: -4},
+                    {bestieFrames: 4, otherSpeed: "8-10%", d: -2},
+                    {bestieFrames: 6, otherSpeed: "8-10%", d: 0},
+                    {bestieFrames: 4, otherSpeed: "11%", d: -4},
+                    {bestieFrames: 6, otherSpeed: "11%", d: -2},
+                    {bestieFrames: 8, otherSpeed: "11%", d: 0},
+                    {bestieFrames: 6, otherSpeed: "12-14%", d: -4},
+                    {bestieFrames: 8, otherSpeed: "12-14%", d: -2},
+                    {bestieFrames: 10, otherSpeed: "12-14%", d: 0},
+                    {bestieFrames: 10, otherSpeed: "15-17%", d: -4},
+                    {bestieFrames: 12, otherSpeed: "15-17%", d: -2},
+                    {bestieFrames: 14, otherSpeed: "15-17%", d: 0},
+                    {bestieFrames: 14, otherSpeed: "18-20%", d: -4},
+                    {bestieFrames: 16, otherSpeed: "18-20%", d: -2},
+                    {bestieFrames: 18, otherSpeed: "18-20%", d: 0},
+                    {bestieFrames: 16, otherSpeed: "21%", d: -4},
+                    {bestieFrames: 18, otherSpeed: "21%", d: -2},
+                    {bestieFrames: 20, otherSpeed: "21%", d: 0},
+                    {bestieFrames: 18, otherSpeed: "22-24%", d: -4},
+                    {bestieFrames: 20, otherSpeed: "22-24%", d: -2},
+                    {bestieFrames: 22, otherSpeed: "22-24%", d: 0},
+                    {bestieFrames: 20, otherSpeed: "25-26%", d: -4},
+                    {bestieFrames: 22, otherSpeed: "25-26%", d: -2},
+                    {bestieFrames: 24, otherSpeed: "25-26%", d: 0}
                 ],
-                "贝斯蒂第二发 vs EMT第二发": [
-                    {"best_frames": 12, "emt_percent": "0%", "d_value": -4},
-                    {"best_frames": 14, "emt_percent": "0%", "d_value": -2},
-                    {"best_frames": 16, "emt_percent": "0%", "d_value": 0},
-                    {"best_frames": 16, "emt_percent": "2-4%", "d_value": -4},
-                    {"best_frames": 18, "emt_percent": "2-4%", "d_value": -2},
-                    {"best_frames": 20, "emt_percent": "2-4%", "d_value": 0},
-                    {"best_frames": 20, "emt_percent": "5-7%", "d_value": -4},
-                    {"best_frames": 22, "emt_percent": "5-7%", "d_value": -2},
-                    {"best_frames": 24, "emt_percent": "5-7%", "d_value": 0},
-                    {"best_frames": 24, "emt_percent": "8-10%", "d_value": -4},
-                    {"best_frames": 26, "emt_percent": "8-10%", "d_value": -2},
-                    {"best_frames": 28, "emt_percent": "8-10%", "d_value": 0},
-                    {"best_frames": 26, "emt_percent": "11%", "d_value": -4},
-                    {"best_frames": 28, "emt_percent": "11%", "d_value": -2},
-                    {"best_frames": 30, "emt_percent": "11%", "d_value": 0},
-                    {"best_frames": 28, "emt_percent": "12-14%", "d_value": -4},
-                    {"best_frames": 30, "emt_percent": "12-14%", "d_value": -2}
+                "贝斯蒂第二发 与 EMT第二发": [
+                    {bestieFrames: 12, otherSpeed: "0%", d: -4},
+                    {bestieFrames: 14, otherSpeed: "0%", d: -2},
+                    {bestieFrames: 16, otherSpeed: "0%", d: 0},
+                    {bestieFrames: 16, otherSpeed: "2-4%", d: -4},
+                    {bestieFrames: 18, otherSpeed: "2-4%", d: -2},
+                    {bestieFrames: 20, otherSpeed: "2-4%", d: 0},
+                    {bestieFrames: 20, otherSpeed: "5-7%", d: -4},
+                    {bestieFrames: 22, otherSpeed: "5-7%", d: -2},
+                    {bestieFrames: 24, otherSpeed: "5-7%", d: 0},
+                    {bestieFrames: 24, otherSpeed: "8-10%", d: -4},
+                    {bestieFrames: 26, otherSpeed: "8-10%", d: -2},
+                    {bestieFrames: 28, otherSpeed: "8-10%", d: 0},
+                    {bestieFrames: 26, otherSpeed: "11%", d: -4},
+                    {bestieFrames: 28, otherSpeed: "11%", d: -2},
+                    {bestieFrames: 30, otherSpeed: "11%", d: 0},
+                    {bestieFrames: 28, otherSpeed: "12-14%", d: -4},
+                    {bestieFrames: 30, otherSpeed: "12-14%", d: -2}
                 ],
-                "贝斯蒂第三发 vs EMT第三发": [
-                    {"best_frames": 0, "emt_percent": "15-17%", "d_value": 0},
-                    {"best_frames": 2, "emt_percent": "15-17%", "d_value": 2},
-                    {"best_frames": 2, "emt_percent": "18-20%", "d_value": -4},
-                    {"best_frames": 4, "emt_percent": "18-20%", "d_value": -2},
-                    {"best_frames": 6, "emt_percent": "18-20%", "d_value": 0},
-                    {"best_frames": 8, "emt_percent": "18-20%", "d_value": 2},
-                    {"best_frames": 4, "emt_percent": "21%", "d_value": -4},
-                    {"best_frames": 6, "emt_percent": "21%", "d_value": -2},
-                    {"best_frames": 8, "emt_percent": "21%", "d_value": 0},
-                    {"best_frames": 10, "emt_percent": "21%", "d_value": 2},
-                    {"best_frames": 8, "emt_percent": "22-24%", "d_value": -4},
-                    {"best_frames": 10, "emt_percent": "22-24%", "d_value": -2},
-                    {"best_frames": 12, "emt_percent": "22-24%", "d_value": 0},
-                    {"best_frames": 14, "emt_percent": "22-24%", "d_value": 2},
-                    {"best_frames": 10, "emt_percent": "25-26%", "d_value": -4},
-                    {"best_frames": 12, "emt_percent": "25-26%", "d_value": -2},
-                    {"best_frames": 14, "emt_percent": "25-26%", "d_value": 0},
-                    {"best_frames": 16, "emt_percent": "25-26%", "d_value": 2}
+                "贝斯蒂第三发 与 EMT第三发": [
+                    {bestieFrames: 0, otherSpeed: "15-17%", d: 0},
+                    {bestieFrames: 2, otherSpeed: "18-20%", d: -4},
+                    {bestieFrames: 4, otherSpeed: "18-20%", d: -2},
+                    {bestieFrames: 6, otherSpeed: "18-20%", d: 0},
+                    {bestieFrames: 4, otherSpeed: "21%", d: -4},
+                    {bestieFrames: 6, otherSpeed: "21%", d: -2},
+                    {bestieFrames: 8, otherSpeed: "21%", d: 0},
+                    {bestieFrames: 8, otherSpeed: "22-24%", d: -4},
+                    {bestieFrames: 10, otherSpeed: "22-24%", d: -2},
+                    {bestieFrames: 12, otherSpeed: "22-24%", d: 0},
+                    {bestieFrames: 10, otherSpeed: "25-26%", d: -4},
+                    {bestieFrames: 12, otherSpeed: "25-26%", d: -2},
+                    {bestieFrames: 14, otherSpeed: "25-26%", d: 0}
                 ],
-                "贝斯蒂第四发 vs EMT第三发": [
-                    {"best_frames": 0, "emt_percent": "2-4%", "d_value": 2},
-                    {"best_frames": 0, "emt_percent": "5-7%", "d_value": -4},
-                    {"best_frames": 2, "emt_percent": "5-7%", "d_value": -2},
-                    {"best_frames": 4, "emt_percent": "5-7%", "d_value": 0},
-                    {"best_frames": 6, "emt_percent": "5-7%", "d_value": 2},
-                    {"best_frames": 6, "emt_percent": "8-10%", "d_value": -4},
-                    {"best_frames": 8, "emt_percent": "8-10%", "d_value": -2},
-                    {"best_frames": 10, "emt_percent": "8-10%", "d_value": 0},
-                    {"best_frames": 12, "emt_percent": "8-10%", "d_value": 2},
-                    {"best_frames": 8, "emt_percent": "11%", "d_value": -4},
-                    {"best_frames": 10, "emt_percent": "11%", "d_value": -2},
-                    {"best_frames": 12, "emt_percent": "11%", "d_value": 0},
-                    {"best_frames": 14, "emt_percent": "11%", "d_value": 2},
-                    {"best_frames": 12, "emt_percent": "12-14%", "d_value": -4},
-                    {"best_frames": 14, "emt_percent": "12-14%", "d_value": -2},
-                    {"best_frames": 16, "emt_percent": "12-14%", "d_value": 0},
-                    {"best_frames": 18, "emt_percent": "12-14%", "d_value": 2},
-                    {"best_frames": 18, "emt_percent": "15-17%", "d_value": -4},
-                    {"best_frames": 20, "emt_percent": "15-17%", "d_value": -2},
-                    {"best_frames": 22, "emt_percent": "15-17%", "d_value": 0},
-                    {"best_frames": 24, "emt_percent": "15-17%", "d_value": 2},
-                    {"best_frames": 24, "emt_percent": "18-20%", "d_value": -4},
-                    {"best_frames": 26, "emt_percent": "18-20%", "d_value": -2},
-                    {"best_frames": 28, "emt_percent": "18-20%", "d_value": 0},
-                    {"best_frames": 30, "emt_percent": "18-20%", "d_value": 2},
-                    {"best_frames": 26, "emt_percent": "21%", "d_value": -4},
-                    {"best_frames": 28, "emt_percent": "21%", "d_value": -2},
-                    {"best_frames": 30, "emt_percent": "21%", "d_value": 0},
-                    {"best_frames": 30, "emt_percent": "22-24%", "d_value": -4}
+                "贝斯蒂第四发 与 EMT第三发": [
+                    {bestieFrames: 0, otherSpeed: "5-7%", d: -4},
+                    {bestieFrames: 2, otherSpeed: "5-7%", d: -2},
+                    {bestieFrames: 4, otherSpeed: "5-7%", d: 0},
+                    {bestieFrames: 6, otherSpeed: "8-10%", d: -4},
+                    {bestieFrames: 8, otherSpeed: "8-10%", d: -2},
+                    {bestieFrames: 10, otherSpeed: "8-10%", d: 0},
+                    {bestieFrames: 8, otherSpeed: "11%", d: -4},
+                    {bestieFrames: 10, otherSpeed: "11%", d: -2},
+                    {bestieFrames: 12, otherSpeed: "11%", d: 0},
+                    {bestieFrames: 12, otherSpeed: "12-14%", d: -4},
+                    {bestieFrames: 14, otherSpeed: "12-14%", d: -2},
+                    {bestieFrames: 16, otherSpeed: "12-14%", d: 0},
+                    {bestieFrames: 18, otherSpeed: "15-17%", d: -4},
+                    {bestieFrames: 20, otherSpeed: "15-17%", d: -2},
+                    {bestieFrames: 22, otherSpeed: "15-17%", d: 0},
+                    {bestieFrames: 24, otherSpeed: "18-20%", d: -4},
+                    {bestieFrames: 26, otherSpeed: "18-20%", d: -2},
+                    {bestieFrames: 28, otherSpeed: "18-20%", d: 0},
+                    {bestieFrames: 26, otherSpeed: "21%", d: -4},
+                    {bestieFrames: 28, otherSpeed: "21%", d: -2},
+                    {bestieFrames: 30, otherSpeed: "21%", d: 0},
+                    {bestieFrames: 30, otherSpeed: "22-24%", d: -4}
                 ]
             },
-            "best_lpls": {
-                "贝斯蒂第一发 vs LPLS第二发": [
-                    {"best_frames": 0, "lpls_percent": "5-7%", "d_value": 6},
-                    {"best_frames": 2, "lpls_percent": "5-7%", "d_value": 8},
-                    {"best_frames": 4, "lpls_percent": "8-10%", "d_value": 6},
-                    {"best_frames": 6, "lpls_percent": "8-10%", "d_value": 8},
-                    {"best_frames": 8, "lpls_percent": "11-14%", "d_value": 6},
-                    {"best_frames": 10, "lpls_percent": "11-14%", "d_value": 8},
-                    {"best_frames": 12, "lpls_percent": "15-17%", "d_value": 6},
-                    {"best_frames": 14, "lpls_percent": "15-17%", "d_value": 8},
-                    {"best_frames": 16, "lpls_percent": "18-20%", "d_value": 6},
-                    {"best_frames": 18, "lpls_percent": "18-20%", "d_value": 8},
-                    {"best_frames": 20, "lpls_percent": "21-24%", "d_value": 6},
-                    {"best_frames": 22, "lpls_percent": "21-24%", "d_value": 8},
-                    {"best_frames": 24, "lpls_percent": "25-26%", "d_value": 6},
-                    {"best_frames": 26, "lpls_percent": "25-26%", "d_value": 8}
+            
+            // 贝斯蒂 + LPLS 组合
+            "bestie-lpls": {
+                "贝斯蒂第一发 与 LPLS第二发": [
+                    {bestieFrames: 0, otherSpeed: "5-7%", d: 6},
+                    {bestieFrames: 2, otherSpeed: "5-7%", d: 8},
+                    {bestieFrames: 4, otherSpeed: "8-10%", d: 6},
+                    {bestieFrames: 6, otherSpeed: "8-10%", d: 8},
+                    {bestieFrames: 8, otherSpeed: "11-14%", d: 6},
+                    {bestieFrames: 10, otherSpeed: "11-14%", d: 8},
+                    {bestieFrames: 12, otherSpeed: "15-17%", d: 6},
+                    {bestieFrames: 14, otherSpeed: "15-17%", d: 8},
+                    {bestieFrames: 16, otherSpeed: "18-20%", d: 6},
+                    {bestieFrames: 18, otherSpeed: "18-20%", d: 8},
+                    {bestieFrames: 20, otherSpeed: "21-24%", d: 6},
+                    {bestieFrames: 22, otherSpeed: "21-24%", d: 8},
+                    {bestieFrames: 24, otherSpeed: "25-26%", d: 6},
+                    {bestieFrames: 26, otherSpeed: "25-26%", d: 8}
                 ],
-                "贝斯蒂第二发 vs LPLS第二发": [
-                    {"best_frames": 14, "lpls_percent": "0-1%", "d_value": 6},
-                    {"best_frames": 16, "lpls_percent": "0-1%", "d_value": 8},
-                    {"best_frames": 18, "lpls_percent": "2-4%", "d_value": 6},
-                    {"best_frames": 20, "lpls_percent": "2-4%", "d_value": 8},
-                    {"best_frames": 22, "lpls_percent": "5-7%", "d_value": 6},
-                    {"best_frames": 24, "lpls_percent": "5-7%", "d_value": 8},
-                    {"best_frames": 26, "lpls_percent": "8-10%", "d_value": 6},
-                    {"best_frames": 28, "lpls_percent": "8-10%", "d_value": 8},
-                    {"best_frames": 30, "lpls_percent": "11-14%", "d_value": 6}
+                "贝斯蒂第二发 与 LPLS第二发": [
+                    {bestieFrames: 14, otherSpeed: "0%", d: 6},
+                    {bestieFrames: 16, otherSpeed: "0%", d: 8},
+                    {bestieFrames: 18, otherSpeed: "2-4%", d: 6},
+                    {bestieFrames: 20, otherSpeed: "2-4%", d: 8},
+                    {bestieFrames: 22, otherSpeed: "5-7%", d: 6},
+                    {bestieFrames: 24, otherSpeed: "5-7%", d: 8},
+                    {bestieFrames: 26, otherSpeed: "8-10%", d: 6},
+                    {bestieFrames: 28, otherSpeed: "8-10%", d: 8},
+                    {bestieFrames: 30, otherSpeed: "11-14%", d: 6}
                 ],
-                "贝斯蒂第三发 vs LPLS第三发": [
-                    {"best_frames": 2, "lpls_percent": "21-24%", "d_value": 6},
-                    {"best_frames": 4, "lpls_percent": "21-24%", "d_value": 8},
-                    {"best_frames": 8, "lpls_percent": "25-26%", "d_value": 6},
-                    {"best_frames": 10, "lpls_percent": "25-26%", "d_value": 8}
+                "贝斯蒂第三发 与 LPLS第三发": [
+                    {bestieFrames: 2, otherSpeed: "21-24%", d: 6},
+                    {bestieFrames: 4, otherSpeed: "21-24%", d: 8},
+                    {bestieFrames: 8, otherSpeed: "25-26%", d: 6},
+                    {bestieFrames: 10, otherSpeed: "25-26%", d: 8}
                 ],
-                "贝斯蒂第四发 vs LPLS第三发": [
-                    {"best_frames": 0, "lpls_percent": "8-10%", "d_value": 6},
-                    {"best_frames": 2, "lpls_percent": "8-10%", "d_value": 8},
-                    {"best_frames": 6, "lpls_percent": "11-14%", "d_value": 6},
-                    {"best_frames": 8, "lpls_percent": "11-14%", "d_value": 8},
-                    {"best_frames": 12, "lpls_percent": "15-17%", "d_value": 6},
-                    {"best_frames": 14, "lpls_percent": "15-17%", "d_value": 8},
-                    {"best_frames": 18, "lpls_percent": "18-20%", "d_value": 6},
-                    {"best_frames": 20, "lpls_percent": "18-20%", "d_value": 8},
-                    {"best_frames": 24, "lpls_percent": "21-24%", "d_value": 6},
-                    {"best_frames": 26, "lpls_percent": "21-24%", "d_value": 8},
-                    {"best_frames": 30, "lpls_percent": "25-26%", "d_value": 6}
+                "贝斯蒂第四发 与 LPLS第三发": [
+                    {bestieFrames: 0, otherSpeed: "8-10%", d: 6},
+                    {bestieFrames: 2, otherSpeed: "8-10%", d: 8},
+                    {bestieFrames: 6, otherSpeed: "11-14%", d: 6},
+                    {bestieFrames: 8, otherSpeed: "11-14%", d: 8},
+                    {bestieFrames: 12, otherSpeed: "15-17%", d: 6},
+                    {bestieFrames: 14, otherSpeed: "15-17%", d: 8},
+                    {bestieFrames: 18, otherSpeed: "18-20%", d: 6},
+                    {bestieFrames: 20, otherSpeed: "18-20%", d: 8},
+                    {bestieFrames: 24, otherSpeed: "21-24%", d: 6},
+                    {bestieFrames: 26, otherSpeed: "21-24%", d: 8},
+                    {bestieFrames: 30, otherSpeed: "25-26%", d: 6}
                 ]
             }
         };
 
-        // 角色蓄速选项
-        const charOptions = {
-            "best_emt": ["0%", "2-4%", "5-7%", "8-10%", "11%", "12-14%", "15-17%", "18-20%", "21%", "22-24%", "25-26%"],
-            "best_lpls": ["0-1%", "2-4%", "5-7%", "8-10%", "11-14%", "15-17%", "18-20%", "21-24%", "25-26%"]
-        };
+        // 根据d值获取站位信息
+        function getPositionInfo(comboType, d) {
+            if (comboType === "bestie-emt") {
+                if (d === -4) return "贝斯蒂在P3/P4/P5，EMT在P1/P2";
+                if (d === -2) return "贝斯蒂在P1/P2，EMT在P1/P2 或 贝斯蒂在P3/P4/P5，EMT在P3/P4/P5";
+                if (d === 0) return "贝斯蒂在P1/P2，EMT在P3/P4/P5";
+            } else if (comboType === "bestie-lpls") {
+                if (d === 8) return "贝斯蒂在P1/P2，LPLS任意站位";
+                if (d === 6) return "贝斯蒂在P3/P4/P5，LPLS任意站位";
+            }
+            return "未知站位组合";
+        }
 
-        // 弹道数据
-        const trajectoryData = {
-            "best": {
-                "P1": 14,
-                "P2": 14,
-                "P3": 12,
-                "P4": 12,
-                "P5": 12
-            },
-            "emt": {
-                "P1": 16,
-                "P2": 16,
-                "P3": 14,
-                "P4": 14,
-                "P5": 14
-            },
-            "lpls": {
-                "P1": 6,
-                "P2": 6,
-                "P3": 6,
-                "P4": 6,
-                "P5": 6
+        // 根据角色组合切换可选的蓄速百分比
+        document.getElementById('character-combo').addEventListener('change', function() {
+            const combo = this.value;
+            const otherSpeedSelect = document.getElementById('other-speed');
+            const emtOptions = document.querySelectorAll('.emt-option');
+            const lplsOptions = document.querySelectorAll('.lpls-option');
+            
+            if (combo === 'bestie-emt') {
+                emtOptions.forEach(opt => opt.style.display = 'block');
+                lplsOptions.forEach(opt => opt.style.display = 'none');
+                // 设置默认选择第一个EMT选项
+                otherSpeedSelect.value = "0%";
+            } else {
+                emtOptions.forEach(opt => opt.style.display = 'none');
+                lplsOptions.forEach(opt => opt.style.display = 'block');
+                // 设置默认选择第一个LPLS选项
+                otherSpeedSelect.value = "0-1%";
             }
-        };
+        });
 
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取DOM元素
-            const charTypeSelect = document.getElementById('char-type');
-            const otherPercentSelect = document.getElementById('other-percent');
-            const bestFramesInput = document.getElementById('best-frames');
-            const checkBtn = document.getElementById('check-btn');
-            const resultContent = document.getElementById('result-content');
+        // 初始加载时设置正确的选项显示
+        document.getElementById('character-combo').dispatchEvent(new Event('change'));
+
+        // 查询按钮点击事件
+        document.getElementById('query-btn').addEventListener('click', function() {
+            const comboType = document.getElementById('character-combo').value;
+            const bestieFrames = parseInt(document.getElementById('bestie-frames').value);
+            const otherSpeed = document.getElementById('other-speed').value;
             
-            // 初始化选项
-            updateCharOptions();
+            const resultDiv = document.getElementById('result');
             
-            // 监听角色类型变化
-            charTypeSelect.addEventListener('change', function() {
-                updateCharOptions();
-            });
-            
-            // 查询按钮点击事件
-            checkBtn.addEventListener('click', function() {
-                checkAllPossibleCombinations();
-            });
-            
-            // 更新角色选项
-            function updateCharOptions() {
-                const charType = charTypeSelect.value;
-                const options = charOptions[charType];
-                
-                // 清空现有选项
-                otherPercentSelect.innerHTML = '';
-                
-                // 添加新选项
-                options.forEach(option => {
-                    const optionElement = document.createElement('option');
-                    optionElement.value = option;
-                    optionElement.textContent = option;
-                    otherPercentSelect.appendChild(optionElement);
-                });
+            // 验证输入
+            if (isNaN(bestieFrames) || bestieFrames < 0 || bestieFrames > 30) {
+                resultDiv.innerHTML = "<div class='result-title'>❌ 请输入0-30之间的贝斯蒂减少帧数</div>";
+                resultDiv.className = "result failure";
+                resultDiv.style.display = "block";
+                return;
             }
             
-            // 检查所有可能的组合
-            function checkAllPossibleCombinations() {
-                // 获取输入值
-                const charType = charTypeSelect.value;
-                const bestFrames = parseInt(bestFramesInput.value);
-                const otherPercent = otherPercentSelect.value;
-                
-                // 验证输入
-                if (isNaN(bestFrames) || bestFrames < 0 || bestFrames > 30) {
-                    showError("请输入0-30之间的贝斯蒂减少帧数");
-                    return;
-                }
-                
-                // 获取对应的数据
-                const pairingData = hitData[charType];
-                const otherChar = charType.split('_')[1]; // 获取emt或lpls
-                
-                // 存储所有可行的组合
-                const validCombinations = [];
-                
-                // 遍历所有击发配对
-                Object.keys(pairingData).forEach(pairing => {
-                    // 查找匹配的数据
-                    const match = pairingData[pairing].find(item => {
-                        if (charType === 'best_emt') {
-                            return item.best_frames === bestFrames && item.emt_percent === otherPercent;
-                        } else if (charType === 'best_lpls') {
-                            return item.best_frames === bestFrames && item.lpls_percent === otherPercent;
-                        }
-                        return false;
-                    });
-                    
-                    // 如果找到匹配的数据
-                    if (match) {
-                        // 查找可行的站位组合
-                        const positionGroups = findValidPositionGroups(match.d_value, otherChar);
-                        
-                        if (positionGroups.length > 0) {
-                            validCombinations.push({
-                                pairing: pairing,
-                                d_value: match.d_value,
-                                position_groups: positionGroups
-                            });
-                        }
-                    }
-                });
-                
-                // 显示结果
-                if (validCombinations.length > 0) {
-                    showSuccess(validCombinations, charType);
-                } else {
-                    showNoResult();
-                }
-            }
+            // 查找匹配的组合
+            const matches = [];
+            const comboData = frameData[comboType];
             
-            // 查找可行的站位组合（按组显示）
-            function findValidPositionGroups(dValue, otherChar) {
-                const positionGroups = [];
-                
-                // 根据d值和角色类型确定站位规则
-                if (otherChar === 'emt') {
-                    if (dValue === -4) {
-                        // 贝斯蒂在P3/P4/P5，EMT在P1/P2
-                        positionGroups.push({
-                            name: "贝斯蒂在P3/P4/P5，EMT在P1/P2"
-                        });
-                    } else if (dValue === -2) {
-                        // 两种情况：
-                        // 1. 贝斯蒂在P3/P4/P5，EMT在P3/P4/P5
-                        positionGroups.push({
-                            name: "贝斯蒂在P3/P4/P5，EMT在P3/P4/P5"
-                        });
-                        // 2. 贝斯蒂在P1/P2，EMT在P1/P2
-                        positionGroups.push({
-                            name: "贝斯蒂在P1/P2，EMT在P1/P2"
-                        });
-                    } else if (dValue === 0) {
-                        // 贝斯蒂在P1/P2，EMT在P3/P4/P5
-                        positionGroups.push({
-                            name: "贝斯蒂在P1/P2，EMT在P3/P4/P5"
-                        });
-                    } else if (dValue === 2) {
-                        // 贝斯蒂在P1/P2，EMT在P3/P4/P5
-                        positionGroups.push({
-                            name: "贝斯蒂在P1/P2，EMT在P3/P4/P5"
-                        });
-                    }
-                } else if (otherChar === 'lpls') {
-                    if (dValue === 6) {
-                        // 贝斯蒂在P3/P4/P5
-                        positionGroups.push({
-                            name: "贝斯蒂在P3/P4/P5"
-                        });
-                    } else if (dValue === 8) {
-                        // 贝斯蒂在P1/P2
-                        positionGroups.push({
-                            name: "贝斯蒂在P1/P2"
+            for (const [comboName, data] of Object.entries(comboData)) {
+                for (const item of data) {
+                    if (item.bestieFrames === bestieFrames && item.otherSpeed === otherSpeed) {
+                        matches.push({
+                            comboName: comboName,
+                            d: item.d,
+                            positionInfo: getPositionInfo(comboType, item.d)
                         });
                     }
                 }
-                
-                return positionGroups;
             }
             
-            // 显示成功结果
-            function showSuccess(validCombinations, charType) {
-                let resultHTML = `<div class="success">`;
-                resultHTML += `<h3>🎉 可以触发同帧命中！</h3>`;
+            // 显示结果
+            if (matches.length > 0) {
+                let resultHTML = "<div class='result-title'>✅ 可以触发同帧命中！</div>";
                 
-                resultHTML += `<div class="possible-combinations">`;
-                validCombinations.forEach(combination => {
-                    resultHTML += `<div class="combination-item">`;
-                    resultHTML += `<h4>${combination.pairing}</h4>`;
-                    resultHTML += `<p><strong>击发时间差:</strong> ${combination.d_value}帧</p>`;
-                    
-                    // 显示站位分组
-                    combination.position_groups.forEach(group => {
-                        resultHTML += `<div class="position-group">`;
-                        resultHTML += `<h5>${group.name}</h5>`;
-                        resultHTML += `</div>`;
-                    });
-                    
-                    resultHTML += `</div>`;
+                matches.forEach(match => {
+                    resultHTML += `
+                        <div class="combination">
+                            <div class="combination-title">${match.comboName}</div>
+                            <div>击发时间差: ${match.d}帧</div>
+                            <div class="position-info">${match.positionInfo}</div>
+                        </div>
+                    `;
                 });
-                resultHTML += `</div>`;
-                resultHTML += `</div>`;
                 
-                resultContent.innerHTML = resultHTML;
-                resultContent.className = 'success';
+                resultDiv.innerHTML = resultHTML;
+                resultDiv.className = "result success";
+            } else {
+                resultDiv.innerHTML = "<div class='result-title'>❌ 未找到匹配的同帧命中组合</div>";
+                resultDiv.className = "result failure";
             }
             
-            // 显示无结果
-            function showNoResult() {
-                resultContent.innerHTML = `
-                    <div class="error">
-                        <h3>😔 无法触发同帧命中</h3>
-                        <p>当前选择的蓄速组合无法触发同帧命中，请尝试其他组合。</p>
-                    </div>
-                `;
-                resultContent.className = 'error';
-            }
-            
-            // 显示错误
-            function showError(message) {
-                resultContent.innerHTML = `
-                    <div class="error">
-                        <h3>❌ 输入错误</h3>
-                        <p>${message}</p>
-                    </div>
-                `;
-                resultContent.className = 'error';
-            }
+            resultDiv.style.display = "block";
         });
     </script>
 </body>
